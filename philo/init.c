@@ -57,6 +57,9 @@ int	ft_init_data(t_data *data)
 		// 각 철학자가 사용할 왼쪽, 오른쪽 포크의 인덱스 설정
 		data->philos[i].left_fork = i;
 		data->philos[i].right_fork = (i + 1) % data->num_of_philos;
+		//왜 (i + 1) 에다가 철학자의 숫자로 나눠서 그 나머지를 취하는 거냐면...
+		//철학자가 5명일 경우 인덱스 4번(제일 끝) 철학자의 포크 번호는 0번이어야 하기 때문에
+		//아항. 여기까지 보면 다들 고정된 포크를 사용하는구나. 
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)//허용된 함수
 		{
 			// 만약 초기화에 실패하면, 지금까지 생성된 뮤텍스들을 파괴해야 합니다.

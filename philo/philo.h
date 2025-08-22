@@ -27,7 +27,7 @@ typedef struct s_data //여러 스레드가 공유하는 데이터
 	long            time_to_die;
 	long            time_to_eat;
 	long            time_to_sleep;
-	int             num_of_eats;
+	int             num_of_eats;  //다섯 번째 인자. 몇 번을 먹으면 시뮬레이션이 끝나는가. 
     int				fin_simulation; // 시뮬레이션 종료 플래그
 	pthread_mutex_t	finish_mutex;        // 종료 플래그를 보호할 뮤텍스
 	pthread_mutex_t	print_mutex;         // 상태 출력을 보호할 뮤텍스
@@ -45,7 +45,8 @@ int	ft_atoi(const char *str);
 long	ft_get_time(void);
 int	ft_simul_start(t_data *data);
 void	ft_print_status(t_philo *philo, char *status, int is_dead);
-void	ft_usleep(long time_in_ms);
+//void	ft_usleep(long time_in_ms);
+void	ft_usleep(long time_in_ms, t_data *data);
 void	ft_cleanup(t_data *data);
 
 #endif

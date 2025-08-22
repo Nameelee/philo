@@ -51,19 +51,22 @@ long	ft_get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-// 스레드-세이프한 상태 출력 함수
 void	ft_print_status(t_philo *philo, char *status, int is_dead)
 {
 	long	timestamp;
 
 	pthread_mutex_lock(&philo->data->print_mutex);
-	
 	pthread_mutex_lock(&philo->data->finish_mutex);
-	if (!philo->data->fin_simulation || is_dead)
+	if (philo->data->fin_simulation && !is_dead)
 	{
-		timestamp = ft_get_time() - philo->data->start_time;
-		printf("%ld %d %s\n", timestamp, philo->id, status);
+		pthread_mutex_unlock(&philo->data->finish_mutex);
+		pthread_mutex_unlock(&philo->data->print_mutex);
+		return ;
 	}
+	timestamp = ft_get_time() - philo->data->start_time;
+	printf("%ld %d %s\n", timestamp, philo->id, status);
+	if (is_dead)
+		philo->data->fin_simulation = 1;
 	pthread_mutex_unlock(&philo->data->finish_mutex);
 	pthread_mutex_unlock(&philo->data->print_mutex);
 }
