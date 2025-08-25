@@ -11,9 +11,10 @@ static void	ft_clean_on_error(t_data *data, int idx_fork_last)
 		i++;
 	}
     //아래 뮤텍스들은 1개씩 밖에 없기 때문에 
-    pthread_mutex_destroy(&data->print_mutex);
+    //pthread_mutex_destroy(&data->print_mutex);
+	pthread_mutex_destroy(&data->write_mutex);
 	pthread_mutex_destroy(&data->meal_mutex);
-	pthread_mutex_destroy(&data->finish_mutex);
+	//pthread_mutex_destroy(&data->finish_mutex);
 
 	if (data->philos)
 		free(data->philos);
@@ -21,7 +22,6 @@ static void	ft_clean_on_error(t_data *data, int idx_fork_last)
 		free(data->forks);
 	printf("Error: Initialization failed. Cleaning up.\n");
 }
-
 
 int	ft_init_data(t_data *data)
 {
@@ -43,10 +43,11 @@ int	ft_init_data(t_data *data)
         printf("Error: Malloc for forks failed\n");
 		return (1);
 	}
-    //3. 공유 뮤텍스 초기화 
-    pthread_mutex_init(&data->print_mutex, NULL);
+    //3. 공유 뮤텍스 초기화
+	pthread_mutex_init(&data->write_mutex, NULL);
+    //pthread_mutex_init(&data->print_mutex, NULL);
 	pthread_mutex_init(&data->meal_mutex, NULL);
-	pthread_mutex_init(&data->finish_mutex, NULL);
+	//pthread_mutex_init(&data->finish_mutex, NULL);
 	data->fin_simulation= 0;
 	// 4. 각 포크에 대한 뮤텍스 초기화
 	while (i < data->num_of_philos)
