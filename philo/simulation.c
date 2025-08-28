@@ -34,6 +34,10 @@ void	*ft_philos_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	// mutex lock (simulation start)
+	// while (simulation start variable == 0)
+	// continue;
+	// mutex unlock (sumiulation start)
 	if (philo->id % 2 == 0)
 		ft_usleep(1, philo->data);
 	while (!is_finished(philo->data))
@@ -113,6 +117,9 @@ int	ft_simul_start(t_data *data)
 		if (pthread_create(&data->philos[i].thread, NULL,
 				&ft_philos_routine, &data->philos[i]) != 0)
 			return (1);
+	// set start time
+	// lock mutex (simulation start) // simulation start variable = 1;
+	// unlock mutex (simulation start)
 	i = -1;
 	while (++i < data->num_of_philos)
 		if (pthread_join(data->philos[i].thread, NULL) != 0)
