@@ -1,3 +1,5 @@
+// philo/init.c
+
 #include "philo.h"
 
 int	ft_init_data(t_data *data, int argc, char **argv)
@@ -15,6 +17,10 @@ int	ft_init_data(t_data *data, int argc, char **argv)
 		return (1);
 	pthread_mutex_init(&data->write_lock, NULL);
 	pthread_mutex_init(&data->stop_lock, NULL);
+	// --- 추가된 부분 ---
+	pthread_mutex_init(&data->start_simulation, NULL);
+	data->is_sim_start = 0; // 시뮬레이션 시작 플래그 0으로 초기화
+	// -------------------
 	data->fin_simulation = 0;
 	i = -1;
 	while (++i < data->num_of_philos)

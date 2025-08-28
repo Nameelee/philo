@@ -34,8 +34,8 @@ typedef struct s_data
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock; // 출력을 위한 잠금
 	pthread_mutex_t	stop_lock;  // 시뮬레이션 종료 플래그를 위한 잠금
-	// simulation start mutex
-	// simulation start variable = 0
+	pthread_mutex_t start_simulation;//Julian: simulation start mutex
+	int				is_sim_start;//Julian: simulation start variable = 0
 }	t_data;
 
 // Function Prototypes
