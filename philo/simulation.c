@@ -10,20 +10,30 @@ int	is_finished(t_data *data)
 	return (ret);
 }
 
+// --- ft_eat 함수 수정 ---
 static void	ft_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
-	ft_print_status(philo, "has taken a fork");
-	if (philo->data->num_of_philos == 1) // 철학자가 1명일 때 포크 하나만 들고 죽도록
+	if (philo->data->num_of_philos == 1)
 	{
 		ft_usleep(philo->data->time_to_die, philo->data);
-		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 		return ;
 	}
-	pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
-	ft_print_status(philo, "has taken a fork");
+	// 짝수 철학자는 오른쪽 포크부터, 홀수 철학자는 왼쪽 포크부터 잡는다.
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
+		ft_print_status(philo, "has taken a fork");
+		pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
+		ft_print_status(philo, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
+		ft_print_status(philo, "has taken a fork");
+		pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
+		ft_print_status(philo, "has taken a fork");
+	}
 
-	// --- 식사 상태 보호 강화 ---
 	pthread_mutex_lock(&philo->meal_lock);
 	philo->last_meal_time = ft_get_time();
 	ft_print_status(philo, "is eating");
@@ -32,8 +42,17 @@ static void	ft_eat(t_philo *philo)
 	
 	ft_usleep(philo->data->time_to_eat, philo->data);
 
-	pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
-	pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+    // 포크를 놓을 때는 순서가 중요하지 않지만, 잡았던 순서의 역순으로 놓는 것이 일반적입니다.
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
+	}
+	else
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
+		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+	}
 }
 
 void	*ft_philos_routine(void *arg)
@@ -95,6 +114,7 @@ static void	*monitor(void *arg)
 			pthread_mutex_unlock(&data->stop_lock);
 			return (NULL);
 		}
+		usleep(500);
 	}
 	return (NULL);
 }

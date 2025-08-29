@@ -30,8 +30,17 @@ int	ft_init_data(t_data *data, int argc, char **argv)
 		data->philos[i].id = i + 1;
 		data->philos[i].data = data;
 		data->philos[i].meals_eaten = 0;
-		data->philos[i].left_fork = i;
-		data->philos[i].right_fork = (i + 1) % data->num_of_philos;
+		// --- 데드락 방지 로직 ---
+		if (data->philos[i].id % 2 == 0) // 짝수 ID 철학자
+		{
+			data->philos[i].left_fork = i;
+			data->philos[i].right_fork = (i + 1) % data->num_of_philos;
+		}
+		else // 홀수 ID 철학자
+		{
+			data->philos[i].left_fork = (i + 1) % data->num_of_philos;
+			data->philos[i].right_fork = i;
+		}
 	}
 	return (0);
 }
